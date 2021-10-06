@@ -1,25 +1,41 @@
-import logo from './logo.svg';
+import { useEffect, useState } from 'react';
 import './App.css';
-
+import { responseApi } from './services/api';
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	const [product, setProcuct] = useState([]);
+
+	const loadProducts = async () => {
+		const datos = await responseApi();
+		if (datos.status === 200) {
+			setProcuct(datos.data);
+		}
+	};
+
+	useEffect(() => {
+		loadProducts();
+	}, []);
+	return (
+		<>
+			<h1>Productos</h1>
+
+			<div className='container'>
+				{product.map((item) => {
+					return (
+						<div key={item.id} className='card'>
+							<img src={item.filename} alt={'asdas'} />
+							<h2>{item.title}</h2>
+							<small>{item.type}</small>
+							<p>{item.description}</p>
+							<span>
+								<b>$</b>
+								{item.price}
+							</span>
+						</div>
+					);
+				})}
+			</div>
+		</>
+	);
 }
 
 export default App;
